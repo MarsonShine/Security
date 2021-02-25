@@ -13,7 +13,7 @@ namespace SecurityCore.Authentications
 {
     public static class AuthenticationServiceCollections
     {
-        public static void AddAuthentication(this IServiceCollection services)
+        public static void AddSecurityAuthentication(this IServiceCollection services)
         {
             //services.AddAuthentication(options =>
             //{
@@ -47,6 +47,24 @@ namespace SecurityCore.Authentications
                     };
                 });
             services.AddSingleton<IAuthorizationHandler, DefaultAuthorizationHandler>();
+
+            // 授权
+            services.AddSecurityAuthorization();
+        }
+
+        public static void AddSecurityAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("EmployeeNumber"));
+                // 可以指定具体的值
+                options.AddPolicy("Founders", policy => policy.RequireClaim("EmployeeNumber", "1", "2", "3", "4"));
+                options.AddPolicy("CustomAthorization", policy => policy.Requirements.Add(new AuthorizationRequirement() { 
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("密钥")),SecurityAlgorithms.HmacSha256)
+                    // 各种必要的验证参数
+                }));
+            });
+            
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SecurityCore.Authentications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,16 +29,7 @@ namespace SecurityCore
         {
             services.AddControllers();
             // 鉴权
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie();
-            // 授权
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("EmployeeOnly", policy => policy.RequireClaim("EmployeeNumber"));
-                // 可以指定具体的值
-                options.AddPolicy("Founders", policy => policy.RequireClaim("EmployeeNumber", "1", "2", "3", "4"));
-            });
-
+            services.AddSecurityAuthentication();
 
         }
 

@@ -35,6 +35,7 @@ namespace SecurityCore.Authentications
             {
                 var controllActionDesription = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
                 descriptor = controllActionDesription;
+                // 获取上下文信息，根据 url 选择授权
             }
             var identity = context.User.Identity;
             var defaultAuthenticate = await Schemes.GetDefaultAuthenticateSchemeAsync();
